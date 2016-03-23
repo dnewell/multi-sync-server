@@ -1,5 +1,5 @@
 #!/bin/bash
 for (( i=0; i<5000; i++ )); 
 do
-   ./client zeus 22200 $i
+   ./client apollo 4321 7
 done

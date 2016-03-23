@@ -1,3 +1,14 @@
+/*===============================================================
+=            Client.c - a simple client
+=              which asks server.c for the answer to it's input 
+=              multiplied by 10
+=
+=            NOTE: Some code was adapted from the examples given on course site
+=
+=             By : David Newell
+=             For: CS 3305, Winter 2016, Assignment 3
+=
+===============================================================*/
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -22,7 +33,7 @@ struct addrinfo* get_sockaddr(const char* hostname, const char* port)
    struct addrinfo* results;
    int rv;
    memset(&hints, 0, sizeof(struct addrinfo));
-   hints.ai_family   = AF_INET;          //specifies IPv4 address
+   hints.ai_family   = AF_INET;        //specifies IPv4 addresses only
    hints.ai_socktype = SOCK_STREAM;    //specifies TCP stream sockets
    //Sets up the structs using netdb.h method getaddrinfo and performs DNS and service name lookups
    rv = getaddrinfo(hostname, port, &hints, &results);
@@ -64,9 +75,7 @@ int main(int argc, char* argv[])
 {
    char sendBuff[MAX_MSG_SIZE];
    char recvBuff[MAX_MSG_SIZE];
-   struct sockaddr_in serv_addr;
-   struct hostent* server;
-   int rv, sum, product;
+   int product;
 
    if (argc != 4)
    {
@@ -80,9 +89,11 @@ int main(int argc, char* argv[])
    memset(sendBuff, '0', sizeof(sendBuff));
    memset(recvBuff, '0', sizeof(recvBuff));
 
-   int muliplicand = atoi(argv[3]);
+   int multiplicand = atoi(argv[3]);
 
-   snprintf(sendBuff, sizeof(sendBuff), "%d", muliplicand);
+  printf("client: What is %d x 10?\n", multiplicand);
+
+   snprintf(sendBuff, sizeof(sendBuff), "%d", multiplicand);
 
    write(socketDescriptor, sendBuff, strlen(sendBuff));
 
@@ -97,6 +108,6 @@ int main(int argc, char* argv[])
    recvBuff[numbytes] = '\0';
 
    sscanf(recvBuff, "%d", &product);
-   printf("received product is %d\n", product);
+   printf("client: server says it's %d\n", product);
    return 0;
 }
